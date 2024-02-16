@@ -4,25 +4,33 @@ CREATE TABLE IF NOT EXISTS "user" (
     username TEXT NOT NULL,
     email TEXT NOT NULL,
     password TEXT NOT NULL,
-    creation_date TIMESTAMP NOT NULL
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS follow (
     id SERIAL PRIMARY KEY,
     follower SERIAL NOT NULL,
     followed SERIAL NOT NULL,
-    creation_date TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(follower, followed),
     FOREIGN KEY (follower) REFERENCES "user"(id),
     FOREIGN KEY (followed) REFERENCES "user"(id)
+);
+CREATE TABLE IF NOT EXISTS product (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    barcode TEXT NOT NULL,
+    price REAL NOT NULL DEFAULT 0.0
 );
 
 CREATE TABLE IF NOT EXISTS post (
     id SERIAL PRIMARY KEY,
     "user" SERIAL NOT NULL,
     content TEXT NOT NULL,
-    creation_date TIMESTAMP NOT NULL,
-    FOREIGN KEY ("user") REFERENCES "user"(id)
+    product SERIAL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("user") REFERENCES "user"(id),
+    FOREIGN KEY (product) REFERENCES product(id)
 );
 
 DO $$ BEGIN
@@ -36,16 +44,9 @@ CREATE TABLE IF NOT EXISTS reaction (
     "user" SERIAL NOT NULL,
     post SERIAL NOT NULL,
     reaction reaction_type NOT NULL,
-    creation_date TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("user") REFERENCES "user"(id),
     FOREIGN KEY (post) REFERENCES post(id)
-);
-
-CREATE TABLE IF NOT EXISTS product (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    barcode TEXT NOT NULL,
-    price REAL NOT NULL DEFAULT 0.0
 );
 
 CREATE TABLE IF NOT EXISTS address (
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS "order" (
     id SERIAL PRIMARY KEY,
     "user" SERIAL NOT NULL,
     shipping_address SERIAL NOT NULL,
-    creation_date TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("user") REFERENCES "user"(id),
     FOREIGN KEY (shipping_address) REFERENCES address(id)
 );
