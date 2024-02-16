@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: db
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5432:5432"
+
+  neo4j:
+    image: neo4j
+    environment:
+      NEO4J_AUTH: none
+    volumes:
+      - ./data/neo4j:/data/nosql-project
+    ports:
+      - "7474:7474"
+      - "7687:7687"
