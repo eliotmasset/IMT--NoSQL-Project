@@ -16,7 +16,7 @@ class ProductService {
     }
 
     async insertRandomProducts(nb_products: number, nb_users: number): Promise<void> {
-        const generator = new RandomStringGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+        const generator = new RandomGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
         let productRepository = this.db.getRepository(Product.name) as IProductRepository;
         let postRepository = this.db.getRepository(Post.name) as IPostRepository;
         let reactionRepository = this.db.getRepository(Reaction.name) as IReactionRepository;

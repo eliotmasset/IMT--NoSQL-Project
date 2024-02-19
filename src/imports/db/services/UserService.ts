@@ -15,7 +15,7 @@ class UserService {
     }
 
     async insertRandomUsers(nb_users: number): Promise<void> {
-        const generator = new RandomStringGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+        const generator = new RandomGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
         let userRepository = this.db.getRepository(User.name) as IUserRepository;
         let followerRepository = this.db.getRepository(Follower.name) as IFollowerRepository;
         try {

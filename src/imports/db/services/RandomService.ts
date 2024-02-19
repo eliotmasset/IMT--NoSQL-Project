@@ -1,4 +1,4 @@
-class RandomStringGenerator {
+class RandomGenerator {
     private characters: string;
 
     constructor(characters: string) {
