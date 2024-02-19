@@ -3,6 +3,7 @@ import ReactionType from '../models/ReactionType.ts';
 
 interface IReactionRepository {
     create(
+        id: number,
         userId: number,
         postId: number,
         reactionType: ReactionType,

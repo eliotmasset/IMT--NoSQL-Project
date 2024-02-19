@@ -1,5 +1,7 @@
 import IDatabase from '../interfaces/IDatabase';
+import Post from '../models/Post';
 import Product from '../models/Product';
+import Reaction from '../models/Reaction';
 
 class ProductService {
 
