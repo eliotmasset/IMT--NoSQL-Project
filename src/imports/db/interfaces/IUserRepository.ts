@@ -1,6 +1,6 @@
 import User from '../models/User.ts';
 
-interface IUserDao {
+interface IUserRepository {
     create(
         id: number,
         email: string,
@@ -14,4 +14,4 @@ interface IUserDao {
     findByEmail(email: string): User | null;
 }
 
-export default IUserDao;
+export default IUserRepository;
