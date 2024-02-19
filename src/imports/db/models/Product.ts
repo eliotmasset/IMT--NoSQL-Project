@@ -1,30 +1,30 @@
 class Product {
-    private id: number;
-    private name: string;
-    private barcode: string;
-    private price: number;
+    private _id: number;
+    private _name: string;
+    private _barcode: string;
+    private _price: number;
 
     constructor(id: number, name: string, barcode: string, price: number) {
-        this.id = id;
-        this.name = name;
-        this.barcode = barcode;
-        this.price = price;
+        this._id = id;
+        this._name = name;
+        this._barcode = barcode;
+        this._price = price;
     }
 
-    public getId(): number {
-        return this.id;
+    public get Id(): number {
+        return this._id;
     }
 
-    public getName(): string {
-        return this.name;
+    public get Name(): string {
+        return this._name;
     }
 
-    public getBarcode(): string {
-        return this.barcode;
+    public get Barcode(): string {
+        return this._barcode;
     }
 
-    public getPrice(): number {
-        return this.price;
+    public get Price(): number {
+        return this._price;
     }
 }
 

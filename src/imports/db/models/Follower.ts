@@ -1,34 +1,36 @@
-import User from "./User";
-
 class Follower {
-    private id: number;
-    private followerId: number;
-    private followedId: number;
-    private creationDate: Date;
+    private _id: number;
+    private _followerId: number;
+    private _followedId: number;
+    private _creationDate: Date;
 
-    constructor(id: number, followerId: number, followedId: number, creationDate: Date) {
-        this.id = id;
-        this.followerId = followerId;
-        this.followedId = followedId;
-        this.creationDate = creationDate;
+    constructor(
+        id: number,
+        followerId: number,
+        followedId: number,
+        creationDate: Date
+    ) {
+        this._id = id;
+        this._followerId = followerId;
+        this._followedId = followedId;
+        this._creationDate = creationDate;
     }
 
-    public getId(): number {
-        return this.id;
+    public get Id(): number {
+        return this._id;
     }
 
-    public getfollowerId(): number {
-        return this.followerId;
+    public get FollowerId(): number {
+        return this._followerId;
     }
 
-    public getfollowedId(): number {
-        return this.followedId;
+    public get FollowedId(): number {
+        return this._followedId;
     }
 
-    public getCreationDate(): Date {
-        return this.creationDate;
+    public get CreationDate(): Date {
+        return this._creationDate;
     }
-
 }
 
-export default User;
+export default Follower;
