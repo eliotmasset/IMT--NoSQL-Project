@@ -1,22 +1,30 @@
 import IUserRepository from '../interfaces/IUserRepository.ts';
 import User from '../models/User.ts';
+import PostgresDatabase from './PostgresDatabase.ts';
 
 class PostgresUserRepository implements IUserRepository {
-    public create(
+    private _database: PostgresDatabase;
+
+    constructor(database: PostgresDatabase) {
+        this._database = database;
+    }
+
+    public async create(
         id: number,
         email: string,
         username: string,
         password: string,
         creationDate: Date
-    ): User {
+    ): Promise<User> {
+        console.log(this._database.sql``);
         return new User(id, email, username, password, creationDate);
     }
 
-    public find(id: number): User | null {
+    public async find(id: number): Promise<User | null> {
         return null;
     }
 
-    public findByEmail(email: string): User | null {
+    public async findByEmail(email: string): Promise<User | null> {
         return null;
     }
 }

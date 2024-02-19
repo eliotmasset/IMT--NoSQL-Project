@@ -7,11 +7,11 @@ interface IUserRepository {
         username: string,
         password: string,
         creationDate: Date
-    ): User;
+    ): Promise<User>;
 
-    find(id: number): User | null;
+    find(id: number): Promise<User | null>;
 
-    findByEmail(email: string): User | null;
+    findByEmail(email: string): Promise<User | null>;
 }
 
 export default IUserRepository;

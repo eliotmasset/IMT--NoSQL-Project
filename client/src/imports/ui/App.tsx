@@ -1,22 +1,18 @@
-import React from "react";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import Home from "./Home.tsx";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
+import React from 'react';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Home from './Home.tsx';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
     {
-      path: "/",
-      element: <Home />,
+        path: '/',
+        element: <Home />,
     },
 ]);
 
 const darkTheme = createTheme({
     palette: {
-      mode: 'dark',
+        mode: 'dark',
     },
 });
 
