@@ -5,7 +5,7 @@ class PostgresDatabase {
     private _sql: Sql;
 
     private constructor() {
-        this._sql = postgres();
+        this._sql = postgres('', { database: 'db', username: 'admin' });
     }
 
     public static getInstance(): PostgresDatabase {
