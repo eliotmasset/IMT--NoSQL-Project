@@ -39,3 +39,5 @@ class Post {
         return this._creationDate;
     }
 }
+
+export default Post;
