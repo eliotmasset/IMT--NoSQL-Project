@@ -1,5 +1,5 @@
 {
-  "name": "nosql",
+  "name": "nosql-client",
   "version": "1.0.0",
   "description": "user - username - password - creation_date",
   "main": "index.js",
