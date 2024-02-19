@@ -1,7 +1,11 @@
 import IDatabase from '../interfaces/IDatabase';
+import IPostRepository from '../interfaces/IPostRepository';
+import IProductRepository from '../interfaces/IProductRepository';
+import IReactionRepository from '../interfaces/IReactionRepository';
 import Post from '../models/Post';
 import Product from '../models/Product';
 import Reaction from '../models/Reaction';
+import ReactionType from '../models/ReactionType';
 
 class ProductService {
 
@@ -13,11 +17,12 @@ class ProductService {
 
     async insertRandomProducts(nb_products: number, nb_users: number): Promise<void> {
         const generator = new RandomStringGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-        let productRepository = this.db.getRepository(Product.name);
-        let postRepository = this.db.getRepository(Post.name);
-        let reactionRepository = this.db.getRepository(Reaction.name);
+        let productRepository = this.db.getRepository(Product.name) as IProductRepository;
+        let postRepository = this.db.getRepository(Post.name) as IPostRepository;
+        let reactionRepository = this.db.getRepository(Reaction.name) as IReactionRepository;
         try {
             let post_id = 1;
+            let reaction_id = 1;
             for(let i = 0; i < nb_products; i++) {
                 let random_name = generator.generate(10);
                 let random_barcode = generator.generate(13);
@@ -37,12 +42,12 @@ class ProductService {
 
                     users_posts.push(random_user);
 
-                    let post: Post = postRepository.create(post_id, random_user, i, random_content, random_date);
+                    let post: Post = postRepository.create(post_id, random_content, random_user, i, random_date);
 
                     let users_reacted: number[] = [];
                     for(let k = 0; k < Math.round(Math.random() * 10); k++) {
                         let random_user = Math.floor(Math.random() * nb_users);
-                        let random_reaction = Math.random() > 0.5 ? 'LIKE' : 'DISLIKE';
+                        let random_reaction = Math.random() > 0.5 ? ReactionType.LIKE : ReactionType.DISLIKE;
                         let creation_datetime = generator.randomDate();
 
                         if (users_reacted.includes(random_user)) {
@@ -51,7 +56,8 @@ class ProductService {
 
                         users_reacted.push(random_user);
 
-                        let reaction: Reaction = reactionRepository.create(random_user, post_id, random_reaction, creation_datetime);
+                        let reaction: Reaction = reactionRepository.create(reaction_id, random_user, post_id, random_reaction, creation_datetime);
+                        reaction_id++;
                     }
                     post_id++;
                 }
@@ -59,15 +65,6 @@ class ProductService {
             console.log('Users and followers inserted successfully');
         } catch (error) {
             console.error('Error inserting users:', error);
-            throw error;
-        }
-    }
-
-    async clearUsers(): Promise<void> {
-        try {
-            this.db.getRepository(Product.name).clear();
-        } catch (error) {
-            console.error('Error clearing users:', error);
             throw error;
         }
     }

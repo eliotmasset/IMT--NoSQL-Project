@@ -1,4 +1,6 @@
 import IDatabase from '../interfaces/IDatabase';
+import IFollowerRepository from '../interfaces/IFollowerRepository';
+import IUserRepository from '../interfaces/IUserRepository';
 import Follower from '../models/Follower';
 import User from '../models/User';
 
@@ -14,8 +16,8 @@ class UserService {
 
     async insertRandomUsers(nb_users: number): Promise<void> {
         const generator = new RandomStringGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-        let userRepository = this.db.getRepository(User.name);
-        let followerRepository = this.db.getRepository(Follower.name);
+        let userRepository = this.db.getRepository(User.name) as IUserRepository;
+        let followerRepository = this.db.getRepository(Follower.name) as IFollowerRepository;
         try {
             let follower_id = 1;
             for(let i = 0; i < nb_users; i++) {
@@ -33,15 +35,6 @@ class UserService {
             console.log('Users and followers inserted successfully');
         } catch (error) {
             console.error('Error inserting users:', error);
-            throw error;
-        }
-    }
-
-    async clearUsers(): Promise<void> {
-        try {
-            this.db.getRepository(User.name).clear();
-        } catch (error) {
-            console.error('Error clearing users:', error);
             throw error;
         }
     }
