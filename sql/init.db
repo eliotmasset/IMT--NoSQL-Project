@@ -62,18 +62,11 @@ CREATE TABLE IF NOT EXISTS "order" (
     "user" INT NOT NULL,
     billing_address INT NOT NULL,
     shipping_address INT NOT NULL,
+    product INT NOT NULL,
+    price REAL NOT NULL,
     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("user") REFERENCES "user"(id),
     FOREIGN KEY (billing_address) REFERENCES address(id),
+    FOREIGN KEY (product) REFERENCES product(id),
     FOREIGN KEY (shipping_address) REFERENCES address(id)
 );
-
-CREATE TABLE IF NOT EXISTS order_item (
-    id SERIAL PRIMARY KEY,
-    "order" INT NOT NULL,
-    product INT NOT NULL,
-    price REAL NOT NULL,
-    FOREIGN KEY ("order") REFERENCES "order"(id),
-    FOREIGN KEY (product) REFERENCES product(id)
-);
-

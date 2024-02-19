@@ -3,6 +3,8 @@ class Order {
     private _userId: number;
     private _billingAddressId: number;
     private _shippingAddressId: number;
+    private _productId: number;
+    private _price: number;
     private _creationDate: Date;
 
     constructor(
@@ -10,12 +12,16 @@ class Order {
         userId: number,
         billingAddressId: number,
         shippingAddressId: number,
+        productId: number,
+        price: number,
         creationDate: Date
     ) {
         this._id = id;
         this._userId = userId;
         this._billingAddressId = billingAddressId;
         this._shippingAddressId = shippingAddressId;
+        this._productId = productId;
+        this._price = price;
         this._creationDate = creationDate;
     }
 
@@ -33,6 +39,14 @@ class Order {
 
     public get ShippingAddressId(): number {
         return this._shippingAddressId;
+    }
+
+    public get ProductId(): number {
+        return this._productId;
+    }
+
+    public get Price(): number {
+        return this._price;
     }
 
     public get CreationDate(): Date {
