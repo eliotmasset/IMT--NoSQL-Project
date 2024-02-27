@@ -18,3 +18,5 @@ class RandomGenerator {
         return new Date(Math.random() * (new Date()).getTime());
     }
 }
+
+export default RandomGenerator;

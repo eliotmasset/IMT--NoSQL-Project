@@ -17,9 +17,9 @@ class ProductService {
 
     async insertRandomProducts(nb_products: number, nb_users: number): Promise<void> {
         const generator = new RandomGenerator('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-        let productRepository = this.db.getRepository(Product.name) as IProductRepository;
-        let postRepository = this.db.getRepository(Post.name) as IPostRepository;
-        let reactionRepository = this.db.getRepository(Reaction.name) as IReactionRepository;
+        let products= [];
+        let posts = [];
+        let reactions = [];
         try {
             let post_id = 1;
             let reaction_id = 1;
@@ -28,25 +28,19 @@ class ProductService {
                 let random_barcode = generator.generate(13);
                 let random_price = Math.floor(Math.random() * 10000) / 100;
 
-                let product: Product = productRepository.create(i, random_name, random_barcode, random_price);
+                let neo4jRequest = `CREATE (p:Product {id: '${i}', name: '${random_name}', barcode: '${random_barcode}', price: '${random_price}'});`;
+                products.push({id: i, name: random_name, barcode: random_barcode, price: random_price});
 
-                let users_posts: number[] = [];
                 for(let j = 0; j < Math.round(Math.random() * 5); j++) {
                     let random_content = generator.generate(20);
                     let random_date = generator.randomDate();
-                    let random_user = Math.floor(Math.random() * nb_users);
+                    let random_user = Math.ceil(Math.random() * nb_users);
 
-                    if (users_posts.includes(random_user)) {
-                        continue;
-                    }
-
-                    users_posts.push(random_user);
-
-                    let post: Post = postRepository.create(post_id, random_content, random_user, i, random_date);
+                    posts.push({id: post_id, author: random_user, product: i, content: random_content, creation_date: random_date});
 
                     let users_reacted: number[] = [];
                     for(let k = 0; k < Math.round(Math.random() * 10); k++) {
-                        let random_user = Math.floor(Math.random() * nb_users);
+                        let random_user = Math.ceil(Math.random() * nb_users);
                         let random_reaction = Math.random() > 0.5 ? ReactionType.LIKE : ReactionType.DISLIKE;
                         let creation_datetime = generator.randomDate();
 
@@ -56,10 +50,20 @@ class ProductService {
 
                         users_reacted.push(random_user);
 
-                        let reaction: Reaction = reactionRepository.create(reaction_id, random_user, post_id, random_reaction, creation_datetime);
+                        reactions.push({id: reaction_id, user: random_user, post: post_id, reaction: random_reaction, creation_date: creation_datetime});
                         reaction_id++;
                     }
                     post_id++;
+                }
+            }
+            let orders = [];
+            for(let i = 0; i < nb_users; i++) {
+                for(j = 0; j < Math.round(Math.random() * 5); j++) {
+                    let random_price = Math.floor(Math.random() * 10000) / 100;
+                    let random_product = Math.ceil(Math.random() * nb_products);
+                    let creation_datetime = generator.randomDate();
+
+                    orders.push({user: i, product: random_product, price: random_price, creation_date: creation_datetime});
                 }
             }
             console.log('Users and followers inserted successfully');
