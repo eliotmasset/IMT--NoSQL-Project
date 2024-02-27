@@ -2,6 +2,7 @@ import express from 'express';
 import Neo4jDatabase from './db/neo4j/Neo4jDatabase';
 import PostgresDatabase from './db/postgres/PostgresDatabase';
 import UserService from './db/services/UserService';
+import ProductService from './db/services/ProductService';
 
 // let psql = PostgresDatabase.getInstance();
 // psql.sql`SELECT * FROM user`.then((value) => console.log(value));
@@ -38,6 +39,14 @@ app.get('/generateUsers', async(req, res) => {
   await service.insertRandomUsers(10000);
   res.json({
     content: 'Users generated successfully',
+  });
+});
+
+app.get('/generateProducts', async(req, res) => {
+  let service: ProductService = new ProductService();
+  await service.insertRandomProducts(10000, 10000);
+  res.json({
+    content: 'Products generated successfully',
   });
 });
 

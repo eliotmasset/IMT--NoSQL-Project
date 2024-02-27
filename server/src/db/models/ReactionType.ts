@@ -1,6 +1,6 @@
 enum ReactionType {
-    LIKE,
-    DISLIKE,
+    LIKE = 'LIKE',
+    DISLIKE = 'DISLIKE',
 }
 
 export default ReactionType;

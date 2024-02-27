@@ -24,32 +24,6 @@ CREATE TABLE IF NOT EXISTS product (
     price REAL NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS post (
-    id SERIAL PRIMARY KEY,
-    author INT NOT NULL,
-    content TEXT NOT NULL,
-    product INT,
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author) REFERENCES "user"(id),
-    FOREIGN KEY (product) REFERENCES product(id)
-);
-
-DO $$ BEGIN
-    CREATE TYPE reaction_type AS ENUM ('LIKE', 'DISLIKE');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
-CREATE TABLE IF NOT EXISTS reaction (
-    id SERIAL PRIMARY KEY,
-    "user" INT NOT NULL,
-    post INT NOT NULL,
-    reaction reaction_type NOT NULL,
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("user") REFERENCES "user"(id),
-    FOREIGN KEY (post) REFERENCES post(id)
-);
-
 CREATE TABLE IF NOT EXISTS address (
     id SERIAL PRIMARY KEY,
     street TEXT NOT NULL,
