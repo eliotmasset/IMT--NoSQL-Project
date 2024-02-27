@@ -1,23 +1,171 @@
-import React from "react";
-import { Button } from '@mui/material';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import React, { useState } from 'react';
+import { Button, Paper, TextField, Typography } from '@mui/material';
+import SectionGenerate from './SectionGenerate';
+import SectionIndexes from './SectionIndexes';
+import SectionParameters from './SectionParameters';
+import SectionNeo4j from './SectionNeo4j';
+import SectionPostgres from './SectionPostgres';
+
+const style = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: '100vh',
+} as const;
 
 function Home() {
-    const style = {
-        container: {
-            display: "flex",
-            flexDirection: "column" as const,
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-        }
+    const [disabled, setDisabled] = useState<boolean>(false);
+    const [loadingGenerate, setLoadingGenerate] = useState<boolean>(false);
+    const [loadingIndexes, setLoadingIndexes] = useState<boolean>(false);
+    const [loadingNeo4j, setLoadingNeo4j] = useState<boolean>(false);
+    const [loadingPostgres, setLoadingPostgres] = useState<boolean>(false);
+
+    const [results, setResults] = useState<string>('');
+
+    const handleSubmitGenerate = async (nbUsers: number) => {
+        setDisabled(true);
+        setLoadingGenerate(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingGenerate(false);
+    };
+
+    const handleCreateIndexes = async () => {
+        setDisabled(true);
+        setLoadingIndexes(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingIndexes(false);
+    };
+
+    const handleDeleteIndexes = async () => {
+        setDisabled(true);
+        setLoadingIndexes(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingIndexes(false);
+    };
+
+    const handleSubmitNeo4jQuery1 = async () => {
+        setDisabled(true);
+        setLoadingNeo4j(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingNeo4j(false);
+    };
+
+    const handleSubmitNeo4jQuery2 = async () => {
+        setDisabled(true);
+        setLoadingNeo4j(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingNeo4j(false);
+    };
+
+    const handleSubmitNeo4jQuery3 = async () => {
+        setDisabled(true);
+        setLoadingNeo4j(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingNeo4j(false);
+    };
+
+    const handleSubmitPostgresQuery1 = async () => {
+        setDisabled(true);
+        setLoadingPostgres(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingPostgres(false);
+    };
+
+    const handleSubmitPostgresQuery2 = async () => {
+        setDisabled(true);
+        setLoadingPostgres(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingPostgres(false);
+    };
+
+    const handleSubmitPostgresQuery3 = async () => {
+        setDisabled(true);
+        setLoadingPostgres(true);
+        await new Promise((resolve) => {
+            setTimeout(resolve, 800);
+        });
+        setDisabled(false);
+        setLoadingPostgres(false);
     };
 
     return (
-        <div style={style.container}>
-            <Button size="large" variant="contained" endIcon={<CloudDownloadIcon />}>Generate Data</Button>
+        <div style={style}>
+            <Typography variant="h1">NoSQL</Typography>
+            <Typography variant="h4">Generate new Users</Typography>
+            <SectionGenerate
+                disabled={disabled}
+                loading={loadingGenerate}
+                onSubmit={handleSubmitGenerate}
+            />
+
+            <Typography style={{ marginTop: '20px' }} variant="h4">
+                Indexes
+            </Typography>
+            <SectionIndexes
+                disabled={disabled}
+                loading={loadingIndexes}
+                onCreate={handleCreateIndexes}
+                onDelete={handleDeleteIndexes}
+            />
+
+            <Typography style={{ marginTop: '20px' }} variant="h4">
+                Parameters
+            </Typography>
+            <SectionParameters disabled={disabled} />
+
+            <Typography style={{ marginTop: '20px' }} variant="h4">
+                Neo4J
+            </Typography>
+            <SectionNeo4j
+                disabled={disabled}
+                loading={loadingNeo4j}
+                onQuery1={handleSubmitNeo4jQuery1}
+                onQuery2={handleSubmitNeo4jQuery2}
+                onQuery3={handleSubmitNeo4jQuery3}
+            />
+
+            <Typography style={{ marginTop: '20px' }} variant="h4">
+                Postgres
+            </Typography>
+            <SectionPostgres
+                disabled={disabled}
+                loading={loadingPostgres}
+                onQuery1={handleSubmitPostgresQuery1}
+                onQuery2={handleSubmitPostgresQuery2}
+                onQuery3={handleSubmitPostgresQuery3}
+            />
+
+            <Typography style={{ marginTop: '20px' }} variant="h4">
+                Results
+            </Typography>
+            <Typography>time: 0ms</Typography>
+            <Paper style={{ padding: '10px', width: '600px' }}>{results}</Paper>
         </div>
     );
-};
+}
 
 export default Home;

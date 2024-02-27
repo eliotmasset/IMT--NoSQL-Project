@@ -18,12 +18,14 @@ const darkTheme = createTheme({
 
 function App() {
     return (
-        <ThemeProvider theme={darkTheme}>
+        // <ThemeProvider theme={darkTheme}>
+        <>
             <CssBaseline />
             <React.StrictMode>
                 <RouterProvider router={router} />
             </React.StrictMode>
-        </ThemeProvider>
+        </>
+        // </ThemeProvider>
     );
 }
 
