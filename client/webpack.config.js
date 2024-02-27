@@ -48,6 +48,9 @@ var config = {
             },
         ],
     },
+    resolve: {
+        extensions: ['.ts', '.tsx', '...'],
+    },
 };
 
 module.exports = (_env, argv) => {
