@@ -1,5 +1,12 @@
+import { Driver, auth, driver } from 'neo4j-driver';
+
 class Neo4jDatabase {
     private static instance: Neo4jDatabase | null = null;
+    private _db: Driver;
+
+    private constructor() {
+        this._db = driver('neo4j://localhost', auth.basic('admin', 'admin'));
+    }
 
     public static getInstance(): Neo4jDatabase {
         if (this.instance === null) {
@@ -7,6 +14,10 @@ class Neo4jDatabase {
         }
 
         return this.instance;
+    }
+
+    public get db(): Driver {
+        return this._db;
     }
 }
 
