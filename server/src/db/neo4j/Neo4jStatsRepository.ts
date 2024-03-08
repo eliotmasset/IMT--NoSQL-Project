@@ -45,7 +45,27 @@ class Neo4jStatsRepository implements IStatsRepository {
         productId: number,
         depth: number
     ): Promise<StatDto> {
-        // MATCH (i:User{id:'2'})<-[:FOLLOWS*1..10]-(f:User)-[:ORDERED]->(p:Product{id:'8'}) RETURN p, COUNT(*);
+        const session = this._db.db.session();
+
+        try {
+            const start = performance.now();
+            const res = await session.run(
+                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(*) as q`
+            );
+
+            const orders = res.records.map((record) => {
+                return {
+                    productId: record.get('p.id'),
+                    productName: record.get('p.name'),
+                    quantity: record.get('q').low,
+                };
+            });
+
+            return new StatDto(performance.now() - start, orders);
+        } finally {
+            session.close();
+        }
+
         return new StatDto();
     }
 

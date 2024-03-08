@@ -8,6 +8,19 @@ class Api {
 
         return await res.json();
     }
+
+    public async query2(
+        db: string,
+        userId: number,
+        productId: number,
+        depth: number
+    ) {
+        const res = await fetch(
+            `${this._url}/stats/query2/${userId}/${productId}?db=${db}&depth=${depth}`
+        );
+
+        return await res.json();
+    }
 }
 
 export default new Api();

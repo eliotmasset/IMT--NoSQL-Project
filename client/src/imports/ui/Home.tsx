@@ -73,9 +73,11 @@ function Home() {
     const handleSubmitNeo4jQuery2 = async () => {
         setDisabled(true);
         setLoadingNeo4j(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        const res = await api.query2('neo4j', userId, productId, depth);
+        setTime(res.time);
+        setResults(JSON.stringify(res.payload));
+
         setDisabled(false);
         setLoadingNeo4j(false);
     };
