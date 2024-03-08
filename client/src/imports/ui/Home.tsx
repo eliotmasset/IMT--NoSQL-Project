@@ -21,6 +21,10 @@ function Home() {
     const [loadingNeo4j, setLoadingNeo4j] = useState<boolean>(false);
     const [loadingPostgres, setLoadingPostgres] = useState<boolean>(false);
 
+    const [userId, setUserId] = useState<number>(0);
+    const [productId, setProductId] = useState<number>(0);
+    const [depth, setDepth] = useState<number>(0);
+
     const [time, setTime] = useState<number>(0);
     const [results, setResults] = useState<string>('');
 
@@ -58,7 +62,7 @@ function Home() {
         setDisabled(true);
         setLoadingNeo4j(true);
 
-        const res = await api.query1('neo4j', 4, 5);
+        const res = await api.query1('neo4j', userId, depth);
         setTime(res.time);
         setResults(JSON.stringify(res.payload));
 
@@ -139,7 +143,15 @@ function Home() {
             <Typography style={{ marginTop: '20px' }} variant="h4">
                 Parameters
             </Typography>
-            <SectionParameters disabled={disabled} />
+            <SectionParameters
+                userId={userId}
+                setUserId={setUserId}
+                productId={productId}
+                setProductId={setProductId}
+                depth={depth}
+                setDepth={setDepth}
+                disabled={disabled}
+            />
 
             <Typography style={{ marginTop: '20px' }} variant="h4">
                 Neo4J
