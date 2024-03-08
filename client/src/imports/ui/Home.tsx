@@ -5,6 +5,7 @@ import SectionIndexes from './SectionIndexes';
 import SectionParameters from './SectionParameters';
 import SectionNeo4j from './SectionNeo4j';
 import SectionPostgres from './SectionPostgres';
+import api from '../api/Api';
 
 const style = {
     display: 'flex',
@@ -20,6 +21,7 @@ function Home() {
     const [loadingNeo4j, setLoadingNeo4j] = useState<boolean>(false);
     const [loadingPostgres, setLoadingPostgres] = useState<boolean>(false);
 
+    const [time, setTime] = useState<number>(0);
     const [results, setResults] = useState<string>('');
 
     const handleSubmitGenerate = async (nbUsers: number) => {
@@ -55,9 +57,11 @@ function Home() {
     const handleSubmitNeo4jQuery1 = async () => {
         setDisabled(true);
         setLoadingNeo4j(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        const res = await api.query1('neo4j', 4, 5);
+        setTime(res.time);
+        setResults(JSON.stringify(res.payload));
+
         setDisabled(false);
         setLoadingNeo4j(false);
     };
@@ -162,7 +166,7 @@ function Home() {
             <Typography style={{ marginTop: '20px' }} variant="h4">
                 Results
             </Typography>
-            <Typography>time: 0ms</Typography>
+            <Typography>time: {time}ms</Typography>
             <Paper style={{ padding: '10px', width: '600px' }}>{results}</Paper>
         </div>
     );

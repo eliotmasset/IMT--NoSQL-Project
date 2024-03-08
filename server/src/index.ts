@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import Neo4jDatabase from './db/neo4j/Neo4jDatabase';
 import PostgresDatabase from './db/postgres/PostgresDatabase';
 import UserService from './db/services/UserService';
@@ -27,6 +28,8 @@ import StatsController from './controllers/StatsController';
 const app = express();
 const port = 3000;
 
+app.use(cors());
+
 app.get('/', async (req, res) => {
     res.json({
         content: 'Hello World !',
@@ -45,12 +48,12 @@ app.get('/generateUsers', async (req, res) => {
     });
 });
 
-app.get('/generateProducts', async(req, res) => {
-  let service: ProductService = new ProductService();
-  await service.insertRandomProducts(10000, 10000);
-  res.json({
-    content: 'Products generated successfully',
-  });
+app.get('/generateProducts', async (req, res) => {
+    let service: ProductService = new ProductService();
+    await service.insertRandomProducts(10000, 10000);
+    res.json({
+        content: 'Products generated successfully',
+    });
 });
 
 app.listen(port, () => {
