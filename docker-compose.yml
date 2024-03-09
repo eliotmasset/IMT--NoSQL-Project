@@ -9,16 +9,27 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
       - ./sql/init.db:/docker-entrypoint-initdb.d/init.sql
+      - ./data/:/data/
     restart: always
-    ports:
-      - "5432:5432"
+    network_mode: host
 
   neo4j:
     image: neo4j
     environment:
       NEO4J_AUTH: none
+      NEO4J_server_memory_pagecache_size: 4G
+      NEO4J_server_memory_heap_initial__size: 4G
+      NEO4J_server_memory_heap_max__size: 8G
     volumes:
       - ./data/neo4j:/data/nosql-project
-    ports:
-      - "7474:7474"
-      - "7687:7687"
+      - ./data/:/var/lib/neo4j/import/
+    network_mode: host
+
+  nodeServer:
+    image: node:18.16.0
+    volumes:
+      - ./server:/server
+      - ./data/:/data/
+    working_dir: /server
+    command: ["npm", "run", "start"]
+    network_mode: host
