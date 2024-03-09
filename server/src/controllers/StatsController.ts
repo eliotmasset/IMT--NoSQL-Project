@@ -122,10 +122,12 @@ class StatsController {
 
         // Logic
         if (dbParam == 'postgres') {
-            const stat = await this._postgresStatsRepository.getOrdersByUser(
-                userIdParam,
-                depthParam
-            );
+            const stat =
+                await this._postgresStatsRepository.getOrdersByUserAndProduct(
+                    userIdParam,
+                    productIdParam,
+                    depthParam
+                );
             res.json(stat);
         } else if (dbParam == 'neo4j') {
             const stat =

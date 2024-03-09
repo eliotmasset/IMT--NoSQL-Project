@@ -1,5 +1,4 @@
 import StatDto from '../../controllers/StatDto';
-import StatOrderDto from '../../controllers/StatOrderDto';
 import IStatsRepository from '../interfaces/IStatsRepository';
 import Neo4jDatabase from './Neo4jDatabase';
 
