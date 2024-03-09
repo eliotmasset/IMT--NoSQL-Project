@@ -31,31 +31,31 @@ const port = 3000;
 app.use(cors());
 
 app.get('/', async (req, res) => {
-    res.json({
-        content: 'Hello World !',
-    });
+  res.json({
+    content: 'Hello World !',
+  });
 });
 
 app.use('/stats', new StatsController().router);
 
-app.get('/generate', async (req, res) => {});
+app.get('/generate', async (req, res) => { });
 
 app.get('/generateUsers', async (req, res) => {
-    let service: UserService = new UserService();
-    await service.insertRandomUsers(10000);
-    res.json({
-        content: 'Users generated successfully',
-    });
+  let service: UserService = new UserService();
+  await service.insertRandomUsers(100000);
+  res.json({
+    content: 'Users generated successfully',
+  });
 });
 
 app.get('/generateProducts', async (req, res) => {
-    let service: ProductService = new ProductService();
-    await service.insertRandomProducts(10000, 10000);
-    res.json({
-        content: 'Products generated successfully',
-    });
+  let service: ProductService = new ProductService();
+  await service.insertRandomProducts(10000, 10000);
+  res.json({
+    content: 'Products generated successfully',
+  });
 });
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
