@@ -20,7 +20,7 @@ class Neo4jStatsRepository implements IStatsRepository {
         try {
             const start = performance.now();
             const res = await session.run(
-                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product) RETURN p.id, p.name, COUNT(*) as q`
+                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
             );
             const time = performance.now() - start;
 
@@ -51,7 +51,7 @@ class Neo4jStatsRepository implements IStatsRepository {
         try {
             const start = performance.now();
             const res = await session.run(
-                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(*) as q`
+                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
             );
             const time = performance.now() - start;
 
