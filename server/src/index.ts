@@ -28,6 +28,13 @@ import StatsController from './controllers/StatsController';
 const app = express();
 const port = 3000;
 
+async function init() {
+  let userService = new UserService();
+  let productService = new ProductService();
+  await userService.insertRandomUsers(1000000);
+  productService.insertRandomProducts(10000, 10000);
+}
+
 app.use(cors());
 
 app.get('/', async (req, res) => {
@@ -42,7 +49,7 @@ app.get('/generate', async (req, res) => { });
 
 app.get('/generateUsers', async (req, res) => {
   let service: UserService = new UserService();
-  await service.insertRandomUsers(100000);
+  await service.insertRandomUsers(10000);
   res.json({
     content: 'Users generated successfully',
   });
@@ -58,4 +65,8 @@ app.get('/generateProducts', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
+  // after 10 seconds :
+  setTimeout(() => {
+    init();
+  }, 10000);
 });

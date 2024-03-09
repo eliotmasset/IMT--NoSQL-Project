@@ -21,9 +21,7 @@ class UserService {
     let session = this.neo4jDB.db.session();
     let sql = this.postgresDB.sql;
     const filenameUser = '/tmp_import' + generator.generate(5) + '.csv';
-    const filenameFollow = '/tmp_import' + generator.generate(5) + '.csv';
     const writableUserStream = fs.createWriteStream("/data" + filenameUser);
-    const writableFollowStream = fs.createWriteStream("/data" + filenameFollow);
     const user_columns = [
       'id',
       'email',
@@ -51,8 +49,9 @@ class UserService {
       max_follow_id = 0;
     }
 
+    var start = Date.now();
+
     writableUserStream.write(user_columns.join(',') + '\n', function(err) { console.log(err); });
-    writableFollowStream.write(follow_columns.join(',') + '\n', function(err) { console.log(err); });
     try {
       let follow_id = 1;
       let users: { id: number, email: string, username: string, password: string, creation_date: Date }[] = [];
@@ -71,14 +70,13 @@ class UserService {
         }
         let followeds = [i];
         for (let j = 0; j < Math.floor(Math.random() * this.max_followers); j++) {
-          let random_followed_id = max_user_id + Math.ceil(Math.random() * (nb_users - 1));
+          let random_followed_id = Math.ceil(Math.random() * (nb_users - 1 + max_user_id));
           while (followeds.includes(random_followed_id)) {
-            random_followed_id = max_user_id + Math.ceil(Math.random() * (nb_users - 1));
+            random_followed_id = Math.ceil(Math.random() * (nb_users - 1 + max_user_id));
           }
           followeds.push(random_followed_id);
           let creation_datetime = generator.randomDate();
           followers.push({ id: max_follow_id + follow_id, follower: i, followed: random_followed_id, creation_date: creation_datetime });
-          writableFollowStream.write(`${i},${random_followed_id},${max_follow_id + follow_id},${creation_datetime}\n`, function(err) { console.log(err); });
           //await session.run(`MATCH (u1:User {id: '${i}'}), (u2:User {id: '${random_followed_id}'}) CREATE (u1)-[:FOLLOWS {id: '${follow_id}', creation_date: '${creation_datetime}'}]->(u2);`);
           follow_id++;
         }
@@ -91,13 +89,20 @@ class UserService {
       }
       writableUserStream.end();
       await session.run(`DROP INDEX u_id IF EXISTS;`);
-      await session.run(`LOAD CSV WITH HEADERS FROM 'file://${filenameUser}' AS row CREATE (u:User {id: row.id, email: row.email, username: row.username, password: row.password, creation_date: row.creation_date});`);
+      await session.run(`LOAD CSV WITH HEADERS FROM 'file://${filenameUser}' AS row CREATE (u:User {id: toInteger(row.id), email: row.email, username: row.username, password: row.password, creation_date: row.creation_date});`);
       console.log('Users inserted successfully');
       await session.run(`CREATE INDEX u_id FOR (u:User) ON (u.id);`);
       console.log('Index created successfully');
-      await session.run(`LOAD CSV WITH HEADERS FROM 'file://${filenameFollow}' AS row MATCH (u1:User {id: row.id}), (u2:User {id: row.random_followed_id}) USING INDEX u1:User(id) USING INDEX u2:User(id) WHERE CREATE (u1)-[:FOLLOWS {id: row.follow_id, creation_date: row.creation_date}]->(u2);`);
+      for (let i = 0; i < followers.length; i++) {
+        await session.run(`MATCH (u1:User {id: ${followers[i].follower}}), (u2:User {id: ${followers[i].followed}}) USING INDEX u1:User(id) USING INDEX u2:User(id) CREATE (u1)-[:FOLLOWS {id: ${followers[i].id}, creation_date: '${followers[i].creation_date}'}]->(u2);`);
+        if (i % 10000 == 0) {
+          var seconds = Date.now() - start;
+          start = Date.now();
+          console.log(`${i} followers inserted successfully in ${seconds / 1000} seconds`);
+        }
+      }
+      console.log('Followers inserted successfully');
       session.close();
-      writableFollowStream.end();
       writableUserStream.end();
       console.log('Users and followers inserted successfully');
     } catch (error) {
