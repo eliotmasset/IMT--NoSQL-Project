@@ -1,0 +1,16 @@
+meta {
+  name: Neo4jGetUsersByProduct
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{host}}/stats/query3/25?db=neo4j&depth=3
+  body: none
+  auth: none
+}
+
+query {
+  db: neo4j
+  depth: 3
+}

@@ -21,6 +21,14 @@ class Api {
 
         return await res.json();
     }
+
+    public async query3(db: string, productId: number, depth: number) {
+        const res = await fetch(
+            `${this._url}/stats/query3/${productId}?db=${db}&depth=${depth}`
+        );
+
+        return await res.json();
+    }
 }
 
 export default new Api();

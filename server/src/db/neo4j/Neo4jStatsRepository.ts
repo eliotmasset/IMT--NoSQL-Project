@@ -22,6 +22,7 @@ class Neo4jStatsRepository implements IStatsRepository {
             const res = await session.run(
                 `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product) RETURN p.id, p.name, COUNT(*) as q`
             );
+            const time = performance.now() - start;
 
             const orders = res.records.map((record) => {
                 return {
@@ -31,7 +32,7 @@ class Neo4jStatsRepository implements IStatsRepository {
                 };
             });
 
-            return new StatDto(performance.now() - start, orders);
+            return new StatDto(time, orders);
         } finally {
             session.close();
         }
@@ -52,6 +53,7 @@ class Neo4jStatsRepository implements IStatsRepository {
             const res = await session.run(
                 `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(*) as q`
             );
+            const time = performance.now() - start;
 
             const orders = res.records.map((record) => {
                 return {
@@ -61,7 +63,7 @@ class Neo4jStatsRepository implements IStatsRepository {
                 };
             });
 
-            return new StatDto(performance.now() - start, orders);
+            return new StatDto(time, orders);
         } finally {
             session.close();
         }
@@ -74,6 +76,28 @@ class Neo4jStatsRepository implements IStatsRepository {
         productId: number,
         depth: number
     ): Promise<StatDto> {
+        const session = this._db.db.session();
+
+        try {
+            const start = performance.now();
+            const res = await session.run(
+                `MATCH (m:Product{id:'${productId}'})<-[:ORDERED]-(u:User)<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
+            );
+            const time = performance.now() - start;
+
+            const orders = res.records.map((record) => {
+                return {
+                    productId: record.get('p.id'),
+                    productName: record.get('p.name'),
+                    quantity: record.get('q').low,
+                };
+            });
+
+            return new StatDto(time, orders);
+        } finally {
+            session.close();
+        }
+
         return new StatDto();
     }
 }
