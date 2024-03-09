@@ -41,9 +41,15 @@ class UserService {
     var max_user_id = 0;
     var max_follow_id = 0;
     var result = await session.run(`MATCH (n:User) RETURN MAX(n.id) as max`);
-    max_user_id = result.records[0].get('max') + 1;
+    max_user_id = parseInt(result.records[0].get('max') ?? 0) + 1;
     result = await session.run(`MATCH (n:Follow) RETURN MAX(n.id) as max`);
-    max_follow_id = result.records[0].get('max') + 1;
+    max_follow_id = parseInt(result.records[0].get('max') ?? 0) + 1;
+    if (max_user_id == 1) {
+      max_user_id = 0;
+    }
+    if (max_follow_id == 1) {
+      max_follow_id = 0;
+    }
 
     writableUserStream.write(user_columns.join(',') + '\n', function(err) { console.log(err); });
     writableFollowStream.write(follow_columns.join(',') + '\n', function(err) { console.log(err); });
@@ -65,9 +71,9 @@ class UserService {
         }
         let followeds = [i];
         for (let j = 0; j < Math.floor(Math.random() * this.max_followers); j++) {
-          let random_followed_id = max_user_id + Math.round(Math.random() * (nb_users - 1));
+          let random_followed_id = max_user_id + Math.ceil(Math.random() * (nb_users - 1));
           while (followeds.includes(random_followed_id)) {
-            random_followed_id = max_user_id + Math.round(Math.random() * (nb_users - 1));
+            random_followed_id = max_user_id + Math.ceil(Math.random() * (nb_users - 1));
           }
           followeds.push(random_followed_id);
           let creation_datetime = generator.randomDate();
@@ -89,7 +95,7 @@ class UserService {
       console.log('Users inserted successfully');
       await session.run(`CREATE INDEX u_id FOR (u:User) ON (u.id);`);
       console.log('Index created successfully');
-      await session.run(`LOAD CSV WITH HEADERS FROM 'file://${filenameFollow}' AS row MATCH (u1:User {id: row.id}), (u2:User {id: row.random_followed_id}) USING INDEX u1:User(id) USING INDEX u2:User(id) CREATE (u1)-[:FOLLOWS {id: row.follow_id, creation_date: row.creation_date}]->(u2);`);
+      await session.run(`LOAD CSV WITH HEADERS FROM 'file://${filenameFollow}' AS row MATCH (u1:User {id: row.id}), (u2:User {id: row.random_followed_id}) USING INDEX u1:User(id) USING INDEX u2:User(id) WHERE CREATE (u1)-[:FOLLOWS {id: row.follow_id, creation_date: row.creation_date}]->(u2);`);
       session.close();
       writableFollowStream.end();
       writableUserStream.end();
