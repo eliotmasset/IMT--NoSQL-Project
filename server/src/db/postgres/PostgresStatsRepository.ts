@@ -57,7 +57,21 @@ class PostgresStatsRepository implements IStatsRepository {
         productId: number,
         depth: number
     ): Promise<StatDto> {
-        return new StatDto();
+        const start = performance.now();
+        const res = await this._db
+            .sql`WITH RECURSIVE getfol(follower, followed, depth) AS (
+            SELECT follower, followed, 1 FROM follow WHERE followed IN (SELECT "user" FROM "order" WHERE product = ${productId})
+        UNION ALL
+            SELECT f.follower, f.followed, depth + 1 FROM follow f, getfol g WHERE f.followed = g.follower AND depth < ${depth}
+        )
+        SELECT p.id, p.name, COUNT(*) as q FROM "order" o JOIN product p ON o.product = p.id WHERE o.product = ${productId} AND "user" IN (SELECT DISTINCT follower FROM getfol) GROUP BY p.id, p.name`;
+        const time = performance.now() - start;
+
+        const orders = res.map(
+            (order) => new StatProductDto(order.id, order.name, Number(order.q))
+        );
+
+        return new StatDto(time, orders);
     }
 }
 
