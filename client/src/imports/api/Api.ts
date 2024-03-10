@@ -1,6 +1,14 @@
 class Api {
     private _url = 'http://localhost:3000';
 
+    public async postIndex() {
+        await fetch(`${this._url}/stats/index`, { method: 'POST' });
+    }
+
+    public async deleteIndex() {
+        await fetch(`${this._url}/stats/index`, { method: 'DELETE' });
+    }
+
     public async query1(db: string, userId: number, depth: number) {
         const res = await fetch(
             `${this._url}/stats/query1/${userId}?db=${db}&depth=${depth}`

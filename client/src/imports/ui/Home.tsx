@@ -41,9 +41,9 @@ function Home() {
     const handleCreateIndexes = async () => {
         setDisabled(true);
         setLoadingIndexes(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        await api.postIndex();
+
         setDisabled(false);
         setLoadingIndexes(false);
     };
@@ -51,9 +51,9 @@ function Home() {
     const handleDeleteIndexes = async () => {
         setDisabled(true);
         setLoadingIndexes(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        await api.deleteIndex();
+
         setDisabled(false);
         setLoadingIndexes(false);
     };

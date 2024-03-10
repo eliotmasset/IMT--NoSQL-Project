@@ -10,6 +10,14 @@ class Neo4jStatsRepository implements IStatsRepository {
         this._db = Neo4jDatabase.getInstance();
     }
 
+    public async createIndex(): Promise<boolean> {
+        return false;
+    }
+
+    public async dropIndex(): Promise<boolean> {
+        return false;
+    }
+
     // Query 1
     public async getOrdersByUser(
         userId: number,

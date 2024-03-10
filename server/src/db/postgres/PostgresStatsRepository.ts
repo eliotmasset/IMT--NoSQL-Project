@@ -10,6 +10,25 @@ class PostgresStatsRepository implements IStatsRepository {
         this._db = PostgresDatabase.getInstance();
     }
 
+    public async createIndex(): Promise<boolean> {
+        try {
+            await this._db
+                .sql`CREATE INDEX follow_idx ON follow (follower, followed)`;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async dropIndex(): Promise<boolean> {
+        try {
+            await this._db.sql`DROP INDEX follow_idx`;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     public async getOrdersByUser(
         userId: number,
         depth: number

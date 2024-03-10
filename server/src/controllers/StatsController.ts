@@ -12,6 +12,8 @@ class StatsController {
         this._postgresStatsRepository = new PostgresStatsRepository();
         this._router = Router();
 
+        this._router.post('/index', this.postIndex.bind(this));
+        this._router.delete('/index', this.deleteIndex.bind(this));
         this._router.get('/query1/:userId', this.getOrdersByUser.bind(this));
         this._router.get(
             '/query2/:userId/:productId',
@@ -25,6 +27,20 @@ class StatsController {
 
     public get router(): Router {
         return this._router;
+    }
+
+    public async postIndex(req: Request, res: Response) {
+        res.status(200).json({
+            neo4jIndex: await this._neo4jStatsRepository.createIndex(),
+            postgresIndex: await this._postgresStatsRepository.createIndex(),
+        });
+    }
+
+    public async deleteIndex(req: Request, res: Response) {
+        res.status(200).json({
+            neo4jIndex: await this._neo4jStatsRepository.dropIndex(),
+            postgresIndex: await this._postgresStatsRepository.dropIndex(),
+        });
     }
 
     public async getOrdersByUser(req: Request, res: Response) {
