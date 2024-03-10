@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Paper, TextField, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import SectionGenerate from './SectionGenerate';
 import SectionIndexes from './SectionIndexes';
 import SectionParameters from './SectionParameters';
@@ -23,7 +23,7 @@ function Home() {
 
     const [userId, setUserId] = useState<number>(0);
     const [productId, setProductId] = useState<number>(0);
-    const [depth, setDepth] = useState<number>(0);
+    const [depth, setDepth] = useState<number>(1);
 
     const [time, setTime] = useState<number>(0);
     const [results, setResults] = useState<string>('');
@@ -97,9 +97,11 @@ function Home() {
     const handleSubmitPostgresQuery1 = async () => {
         setDisabled(true);
         setLoadingPostgres(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        const res = await api.query1('postgres', userId, depth);
+        setTime(res.time);
+        setResults(JSON.stringify(res.payload));
+
         setDisabled(false);
         setLoadingPostgres(false);
     };
@@ -107,9 +109,11 @@ function Home() {
     const handleSubmitPostgresQuery2 = async () => {
         setDisabled(true);
         setLoadingPostgres(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        const res = await api.query2('postgres', userId, productId, depth);
+        setTime(res.time);
+        setResults(JSON.stringify(res.payload));
+
         setDisabled(false);
         setLoadingPostgres(false);
     };
@@ -117,9 +121,11 @@ function Home() {
     const handleSubmitPostgresQuery3 = async () => {
         setDisabled(true);
         setLoadingPostgres(true);
-        await new Promise((resolve) => {
-            setTimeout(resolve, 800);
-        });
+
+        const res = await api.query3('postgres', productId, depth);
+        setTime(res.time);
+        setResults(JSON.stringify(res.payload));
+
         setDisabled(false);
         setLoadingPostgres(false);
     };

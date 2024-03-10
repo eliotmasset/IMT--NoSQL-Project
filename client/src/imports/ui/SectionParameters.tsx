@@ -49,8 +49,8 @@ function SectionParameters({
     const handleInputDepth = (e: any) => {
         if (!e.target.value) {
             setDepthError('Not a number.');
-        } else if (e.target.value < 0) {
-            setDepthError('Minimum is 0.');
+        } else if (e.target.value < 1) {
+            setDepthError('Minimum is 1.');
         } else {
             setDepthError(null);
             setDepth(e.target.value);
