@@ -28,6 +28,10 @@ class PostgresStatsRepository implements IStatsRepository {
             (order) => new StatProductDto(order.id, order.name, Number(order.q))
         );
 
+        orders.sort((a, b) => {
+            return a.productId - b.productId;
+        });
+
         return new StatDto(time, orders);
     }
 
@@ -70,6 +74,10 @@ class PostgresStatsRepository implements IStatsRepository {
         const orders = res.map(
             (order) => new StatProductDto(order.id, order.name, Number(order.q))
         );
+
+        orders.sort((a, b) => {
+            return a.productId - b.productId;
+        });
 
         return new StatDto(time, orders);
     }

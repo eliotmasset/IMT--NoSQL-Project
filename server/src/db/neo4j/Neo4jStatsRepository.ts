@@ -1,4 +1,5 @@
 import StatDto from '../../controllers/StatDto';
+import StatProductDto from '../../controllers/StatProductDto';
 import IStatsRepository from '../interfaces/IStatsRepository';
 import Neo4jDatabase from './Neo4jDatabase';
 
@@ -19,16 +20,21 @@ class Neo4jStatsRepository implements IStatsRepository {
         try {
             const start = performance.now();
             const res = await session.run(
-                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
+                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*1..${depth}]-(f:User)-[:ORDERED]->(p:Product) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
             );
             const time = performance.now() - start;
 
-            const orders = res.records.map((record) => {
-                return {
-                    productId: record.get('p.id'),
-                    productName: record.get('p.name'),
-                    quantity: record.get('q').low,
-                };
+            const orders = res.records.map(
+                (record) =>
+                    new StatProductDto(
+                        Number(record.get('p.id')),
+                        record.get('p.name'),
+                        record.get('q').low
+                    )
+            );
+
+            orders.sort((a, b) => {
+                return a.productId - b.productId;
             });
 
             return new StatDto(time, orders);
@@ -50,17 +56,18 @@ class Neo4jStatsRepository implements IStatsRepository {
         try {
             const start = performance.now();
             const res = await session.run(
-                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*0..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
+                `MATCH (i:User{id:'${userId}'})<-[:FOLLOWS*1..${depth}]-(f:User)-[:ORDERED]->(p:Product{id:'${productId}'}) RETURN p.id, p.name, COUNT(DISTINCT f) as q`
             );
             const time = performance.now() - start;
 
-            const orders = res.records.map((record) => {
-                return {
-                    productId: record.get('p.id'),
-                    productName: record.get('p.name'),
-                    quantity: record.get('q').low,
-                };
-            });
+            const orders = res.records.map(
+                (record) =>
+                    new StatProductDto(
+                        Number(record.get('p.id')),
+                        record.get('p.name'),
+                        record.get('q').low
+                    )
+            );
 
             return new StatDto(time, orders);
         } finally {
@@ -84,12 +91,17 @@ class Neo4jStatsRepository implements IStatsRepository {
             );
             const time = performance.now() - start;
 
-            const orders = res.records.map((record) => {
-                return {
-                    productId: record.get('p.id'),
-                    productName: record.get('p.name'),
-                    quantity: record.get('q').low,
-                };
+            const orders = res.records.map(
+                (record) =>
+                    new StatProductDto(
+                        Number(record.get('p.id')),
+                        record.get('p.name'),
+                        record.get('q').low
+                    )
+            );
+
+            orders.sort((a, b) => {
+                return a.productId - b.productId;
             });
 
             return new StatDto(time, orders);
